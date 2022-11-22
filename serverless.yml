@@ -1,0 +1,72 @@
+service: aws-reinvent-microservice-example
+frameworkVersion: '3'
+
+# Stage parameters
+params:
+  # Values for the "prod" stage
+  prod:
+    patientDbHost: localhost
+    patientDbName: patient
+    patientUser: local
+    patientPassword: local
+    jwtSigningKey: af92fb8f-ebbf-4df6-a54f-6355b0e9ea28
+  # Values for the "dev" stage
+  dev:
+    patientDbHost: localhost
+    patientDbName: patient
+    patientUser: local
+    patientPassword: local
+    jwtSigningKey: af92fb8f-ebbf-4df6-a54f-6355b0e9ea28
+    
+provider:
+  name: aws
+  runtime: nodejs14.x
+  environment:
+    patient_DB_HOST: ${param:patientDbHost}
+    patient_DB_NAME: ${param:patientDbName}
+    patient_DB_USER: ${param:patientUser}
+    patient_DB_PASSWORD: ${param:patientPassword}
+    JWT_SIGNING_KEY: ${param:jwtSigningKey}
+    
+package:
+  patterns:
+    - layers/**
+    - service/**
+
+layers:
+  dependencies :
+    path: /layers/
+
+functions:
+  getPatient:
+    handler: /service/patient-service.getPatient
+    layers:
+      - !Ref dependenciesLambdaLayer
+    events:
+      - httpApi:
+          path: /patient/{patientId}
+          method: get
+  createPatient:
+    handler: /service/patient-service.createPatient
+    layers:
+      - !Ref dependenciesLambdaLayer
+    events:
+      - httpApi:
+          path: /patient
+          method: post
+  updatePatient:
+    handler: /service/patient-service.updatePatient
+    layers:
+      - !Ref dependenciesLambdaLayer
+    events:
+      - httpApi:
+          path: /patient/{patientId}
+          method: put
+  deletePatient:
+    handler: /service/patient-service.deletePatient
+    layers:
+      - !Ref dependenciesLambdaLayer
+    events:
+      - httpApi:
+          path: /patient/{patientId}
+          method: delete
