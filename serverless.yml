@@ -44,7 +44,7 @@ functions:
       - !Ref dependenciesLambdaLayer
     events:
       - httpApi:
-          path: /patient/{patientId}
+          path: /patient/{patientId} 
           method: get
   createPatient:
     handler: /service/patient-service.createPatient
