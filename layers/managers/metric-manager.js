@@ -4,7 +4,7 @@ const tokenManager = require('./token-manager.js');
 const dal = require('../dal/metric-dal.js');
 
 module.exports.recordMetricEvent = function (event, eventSource, eventAction, currentDuration) {
-    //Extract and Add tenant id to the message
+    //Extract and Add user id to the message
     const userId = tokenManager.getUserId(event);
 
     const metricEvent = {
